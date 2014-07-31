@@ -1,16 +1,15 @@
 from django.conf.urls.defaults import url
-from tastypie import http
-from tastypie.exceptions import ImmediateHttpResponse
 from tastypie.resources import ModelResource
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import DjangoAuthorization
+from tastypie.bundle import Bundle
 from tastypie.utils import trailing_slash
+
 from datetime import datetime
 from django.utils.timezone import utc
-from gcm.models import Device
 
+from gcm.models import Device
 import logging
-import json
 
 
 logger = logging.getLogger(__name__)
@@ -45,44 +44,32 @@ class DeviceResource(ModelResource):
         comes to this url 'get_device' method will be call
         """
         return [
-            url(r"^(?P<resource_name>%s)/%s$" %
+            url(r"^(?P<resource_name>%s)/(?P<device_id>[\w\d_.-]+)%s$" %
                 (self._meta.resource_name, trailing_slash()),
-                self.wrap_view('get_device'),
-                name="api_get_device"
+                self.wrap_view('dispatch_detail'),
+                name="api_dispatch_detail"
             ),
         ]
 
-    def get_device(self, request, **kwargs):
+    def get_resource_uri(self, bundle_or_obj):
         """
-        When request comes with 'devices/?url<param>' url this method
-        will be invoke, need to extract Device object which matches to
-        arg 'device_id'
+        When using non PK data for url, need to overrid this function and set
+        the string 'pk' to desired field.
 
-        There should be only one Device object should be retun with response,
-        since device_id field is unique in Device.
+        In our scenario we are using 'device_id' in url, so override the 'pk'
+        with 'device_id'
         """
-        # need to check the
-        #   1. request type
-        #   2. user authentication
-        self.method_check(request, allowed=['get'])
-        self.is_authenticated(request)
-        self.throttle_check(request)
+        kwargs = {
+            'resource_name': self._meta.resource_name,
+            'api_name': self._meta.api_name
+        }
 
-        device_id = request.GET['device_id']
-        device = None
-        logger.debug("get_device, with device_id %s" % (device_id))
+        if isinstance(bundle_or_obj, Bundle):
+            kwargs['device_id'] = bundle_or_obj.obj.device_id
+        else:
+            kwargs['device_id'] = bundle_or_obj.device_id
 
-        try:
-            device = Device.objects.get(device_id=device_id, user=request.user)
-        except Device.DoesNotExist:
-            logger.debug("get_device, Device does not exists")
-
-            msg = json.dumps({"error": "no device"})
-            raise ImmediateHttpResponse(response=http.HttpNotFound(msg))
-
-        # get device details via calling Resouce method 'get_details'
-        device_resource = DeviceResource()
-        return device_resource.get_detail(request, pk=device.pk)
+        return self._build_reverse_url('api_dispatch_detail', kwargs=kwargs)
 
     def dehydrate(self, bundle):
         """
