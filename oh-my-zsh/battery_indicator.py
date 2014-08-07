@@ -37,5 +37,5 @@ color_out = (
     else red
 )
 
-out = green + out + reset
+out = color_out + out + reset
 sys.stdout.write(out)
