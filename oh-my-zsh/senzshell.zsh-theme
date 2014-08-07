@@ -8,9 +8,9 @@ function get_pwd() {
 }
 
 function battery_charge() {
-  if [ -e ~/Workspace/dev-notes/python/battery_indicator.py ]
+  if [ -e ~/Workspace/dev-notes/oh-my-zsh/battery_indicator.py ]
   then
-    echo `python ~/Workspace/dev-notes/python/battery_indicator.py` 
+    echo `python ~/Workspace/dev-notes/oh-my-zsh/battery_indicator.py` 
   else
     echo ''
   fi
