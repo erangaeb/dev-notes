@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import com.score.senzors.utils.ActivityUtils;
 import java.util.ArrayList;
 
 /**
- * Contact list when sharing sensor
+ * Display Contact list when sharing sensor
  *
  * @author eranga herath(erangeb@gmail.com)
  */
@@ -113,7 +114,10 @@ public class FriendListActivity extends Activity implements SearchView.OnQueryTe
         friendListView.addHeaderView(headerView);
         friendListView.addFooterView(footerView);
         friendListView.setAdapter(friendListAdapter);
-        friendListView.setTextFilterEnabled(true);
+        friendListView.setTextFilterEnabled(false);
+
+        // use to enable search view popup text
+        //friendListView.setTextFilterEnabled(true);
 
         // set up click listener
         friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -168,6 +172,14 @@ public class FriendListActivity extends Activity implements SearchView.OnQueryTe
     @Override
     public boolean onQueryTextChange(String newText) {
         friendListAdapter.getFilter().filter(newText);
+
+        // use to enable search view popup text
+//        if (TextUtils.isEmpty(newText)) {
+//            friendListView.clearTextFilter();
+//        }
+//        else {
+//            friendListView.setFilterText(newText.toString());
+//        }
 
         return true;
     }
