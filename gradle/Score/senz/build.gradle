@@ -1,0 +1,83 @@
+import groovy.swing.SwingBuilder
+
+apply plugin: 'android'
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(':senz:assembleRelease')) {
+        def password = ""
+
+        // prompt dialog when null console
+        if (System.console() == null) {
+            new SwingBuilder().edt {
+                dialog(modal: true,
+                        title: "Enter password",
+                        alwaysOnTop: true,
+                        resizable: false,
+                        locationRelativeTo: null,
+                        pack: true,
+                        show: true
+                ) {
+                    vbox {
+                        label(text: "Please enter key password: ")
+                        input = passwordField()
+                        button(defaultButton: true, text: 'OK', actionPerformed: {
+                            password = input.password;
+                            dispose();
+                        })
+                    }
+                }
+            }
+        } else {
+            // readPassword() returns char[], need to create a String from it
+            password = System.console().readPassword("\nPlease enter key password: ")
+            password = new String(password)
+        }
+
+        if (password.size() <= 0) {
+            throw new InvalidUserDataException("You must enter the password")
+        }
+
+        // set signing config key passwords
+        android.signingConfigs.release.storePassword = password
+        android.signingConfigs.release.keyPassword = password
+    }
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("release-key.keystore")
+            storePassword ''
+            keyAlias 'senzors'
+            keyPassword ''
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard true
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            debuggable true
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
