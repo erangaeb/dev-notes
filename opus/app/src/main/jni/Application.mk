@@ -1,0 +1,2 @@
+APP_ABI := all
+include $(BUILD_SHARED_LIBRARY)

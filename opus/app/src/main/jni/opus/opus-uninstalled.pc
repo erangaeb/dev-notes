@@ -1,0 +1,12 @@
+# Opus codec reference implementation uninstalled pkg-config file
+
+libdir=${pcfiledir}/.libs
+includedir=${pcfiledir}
+
+Name: opus uninstalled
+Description: Opus IETF audio codec (not installed, floating-point)
+Version: 1.0.2
+Requires:
+Conflicts:
+Libs: ${libdir}/libopus.a 
+Cflags: -I${pcfiledir}/./include
