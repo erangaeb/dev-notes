@@ -1,0 +1,60 @@
+\documentclass{article}
+
+\title{Rahasak}
+\author{SCoRe Lab @ university of colombo school of computing}
+\date{July 2017}
+\maketitle
+
+\begin{document}
+
+\section{Rahasak}
+
+\subsection{About Rahasak}
+
+Rahasak is an innovative application that helps your to share your secret data
+such as voice calls, texts, location information and selfies without revealing
+to the rest of the world. It never saves your secrets on its server. Rahasak 
+encrypts your secret information between you and your friend, so no one can 
+see them.
+
+\subsection{Rahasak features}
+
+\begin{enumerate}
+\item Secret calls 
+\item Secret texts
+\item Secret location sharing
+\item Secret selfies :)
+\end{enumerate}
+
+\subsection{Rahasak download}
+
+Rahsak app can be downloaded from google play 
+\newline
+\href{https://play.google.com/store/apps/details?id=com.score.rahasak&hl=en}
+
+\section{Security Architecture}
+Rahsak app encrypts the communication by using AES 256 keys. AES key is 
+exchanged between the users by using 1024 bit RSA public key enctyption. RSA 
+public keys will be distributed to the users by using dual channels that is 
+SenZ Switch and SMS. 
+
+If someone wants to break the security of the system, both mobile SMS service 
+provier and SenZ switch need to be simultaneously compromised. It is unlike to 
+be happend and therefore Rahasak provides perfect data protection to their 
+users.
+
+\section{Technologies}
+
+We mainly forcused on functional programming when building the services. 
+Following is the technology stack
+
+\begin{enumerate}
+\item Scala 
+\item Akka 
+\item Reactive streaming
+\item Erlang 
+\item Android
+\item Opus codec for audio compression
+\end{enumerate}
+
+\end{document}
