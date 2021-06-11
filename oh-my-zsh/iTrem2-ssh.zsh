@@ -22,6 +22,7 @@ function colorssh() {
         fi
     fi
     ssh $*
+    trap - INT
 }
 compdef _ssh tabc=ssh
 
